@@ -43,7 +43,7 @@ Group=root
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=/usr/bin/geth --sepolia --port 30303 --http --http.api debug,eth,net,web3,txpool --authrpc.port 8551 --ws --ws.api debug,eth,net,web3,txpool --datadir /root/ethereum/execution --authrpc.jwtsecret /root/ethereum/execution/geth/jwtsecret --bootnodes "enode://9246d00bc8fd1742e5ad2428b80fc4dc45d786283e05ef6edbd9002cbc335d40998444732fbe921cb88e1d2c73d1b1de53bae6a2237996e9bfe14f871baf7066@18.168.182.86:30303,enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303"
+ExecStart=/usr/bin/geth --sepolia --port 30303 --http --http.api debug,eth,net,web3,txpool --http.addr 0.0.0.0 --authrpc.port 8551 --ws --ws.api debug,eth,net,web3,txpool --ws.addr 0.0.0.0 --datadir /root/ethereum/execution --authrpc.jwtsecret /root/ethereum/execution/geth/jwtsecret --bootnodes "enode://9246d00bc8fd1742e5ad2428b80fc4dc45d786283e05ef6edbd9002cbc335d40998444732fbe921cb88e1d2c73d1b1de53bae6a2237996e9bfe14f871baf7066@18.168.182.86:30303,enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303"
 
 [Install]
 WantedBy=default.target
