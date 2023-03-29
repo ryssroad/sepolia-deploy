@@ -6,7 +6,7 @@
 Рассмотрим простейший пример связки Geth + Lighthouse / Prysm. Клиент Goerli деплоится аналогичным образом после изменения некоторых параметров.
 
 ## Geth
----
+
 Добавляем репо + ставим Geth
 
 ```
@@ -34,7 +34,11 @@ Group=root
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=/usr/bin/geth --sepolia --authrpc.addr localhost --authrpc.port 8551 --authrpc.vhosts localhost --http --http.addr 0.0.0.0 --http.port 9545 --http.api debug,eth,net,web3,txpool --ws --ws.addr 0.0.0.0 --ws.port 3335 --ws.api debug,eth,net,web3,txpool --ws.api eth,net,web3 --datadir /var/lib/goethereum --bootnodes "enode://9246d00bc8fd1742e5ad2428b80fc4dc45d786283e05ef6edbd9002cbc335d40998444732fbe921cb88e1d2c73d1b1de53bae6a2237    996e9bfe14f871baf7066@18.168.182.86:30303,enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303"
+ExecStart=/usr/bin/geth --sepolia --authrpc.addr localhost --authrpc.port 8551 --authrpc.vhosts localhost \
+--http --http.addr 0.0.0.0 --http.port 9545 --http.api debug,eth,net,web3,txpool --ws --ws.addr 0.0.0.0 \
+--ws.port 3335 --ws.api debug,eth,net,web3,txpool --ws.api eth,net,web3 --datadir /var/lib/goethereum \
+--bootnodes "enode://9246d00bc8fd1742e5ad2428b80fc4dc45d786283e05ef6edbd9002cbc335d40998444732fbe921cb88e1d2c73d1b1de53bae6a2237996e9bfe14f871baf7066@18.168.182.86:30303,
+enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303"
 
 [Install]
 WantedBy=default.target
@@ -50,7 +54,7 @@ sudo systemctl restart geth.service && journalctl -u geth.service -f -o cat
 Далее на выбор рассмотрим два консенсус клиента Lighthouse и Prysm.
 
 ## Lighthouse
----
+
 Качаем последний [релиз](https://github.com/sigp/lighthouse/releases)
 
 ```
@@ -90,7 +94,7 @@ sudo systemctl restart lighthoused.service && journalctl -u lighthoused.service 
 В случае если на хосте **уже** имеется запущенный клиент Lighthouse (распространенная ситуация в докер клиентах) запуск второго **невозможен**. В этом случае следует использовать [альтернативный](https://ethereum.org/en/upgrades/get-involved/#clients) клиент. Рассмотрим в качестве такового [Prysm](https://docs.prylabs.network/docs/getting-started)
 
 ## Prysm
----
+
 Ставим Prysm
 ```
 cd $HOME
@@ -110,6 +114,8 @@ curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --out
 wget -O genesis.ssz https://github.com/eth-clients/merge-testnets/blob/main/sepolia/genesis.ssz?raw=true
 ```
 ---
+Привожу для примера, запускать не надо, все запихнем в сервис. 
+
 Строка запуска Geth. Обращаю внимание на необходимость изменения ключа `--authrpc` в сервисе `geth` созданном ранее.
 ```
 geth --sepolia --http --http.api eth,net,engine,admin,web3 --authrpc.jwtsecret /root/ethereum/consensus/prysm/jwt.hex
@@ -117,7 +123,8 @@ geth --sepolia --http --http.api eth,net,engine,admin,web3 --authrpc.jwtsecret /
 
 Строка запуска Prysm. **Меняем ключ `--suggested-fee-recipient` на свой ERC20 адрес**
 ```
-./prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --sepolia --suggested-fee-recipient=0x01234567722E6b0000012BFEBf6177F1D2e9758D9 --jwt-secret=jwt.hex --genesis-state=genesis.ssz
+./prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --sepolia \
+--suggested-fee-recipient=0x01234567722E6b0000012BFEBf6177F1D2e9758D9 --jwt-secret=jwt.hex --genesis-state=genesis.ssz
 ```
 ---
 
@@ -135,7 +142,9 @@ Group=root
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=/root/ethereum/consensus/prysm/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --sepolia --checkpoint-sync-url=https://checkpoint-sync.sepolia.ethpandaops.io --suggested-fee-recipient=<0x56...06483> --jwt-secret=jwt.hex --genesis-state=genesis.ssz
+ExecStart=/root/ethereum/consensus/prysm/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --sepolia \
+--checkpoint-sync-url=https://checkpoint-sync.sepolia.ethpandaops.io --suggested-fee-recipient=<0x56...06483> \
+--jwt-secret=jwt.hex --genesis-state=genesis.ssz
 
 [Install]
 WantedBy=default.target
