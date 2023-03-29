@@ -119,7 +119,7 @@ curl https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh --out
 wget -O genesis.ssz https://github.com/eth-clients/merge-testnets/blob/main/sepolia/genesis.ssz?raw=true
 ```
 ---
-Привожу для примера, запускать не надо, все запихнем в сервис. 
+**Привожу для примера, запускать не надо, все запихнем в сервис.**
 
 Строка запуска Geth. Обращаю внимание на необходимость изменения ключа `--authrpc` в сервисе `geth` созданном ранее.
 ```
