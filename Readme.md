@@ -3,7 +3,9 @@
 - Execution client (Geth, Nethermind, Besu, Erigon)
 - Consensus client (Lighthouse, Lodestar, Nimbus, Prysm, Teku)
 
-Рассмотрим простейший пример связки Geth + Lighthouse / Prysm. Клиент Goerli деплоится аналогичным образом после изменения некоторых параметров.
+Рассмотрим простейший пример связки Geth + Lighthouse / Prysm. 
+
+Клиент Goerli деплоится аналогичным образом после изменения некоторых параметров.
 
 ## Geth
 
