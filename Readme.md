@@ -22,6 +22,10 @@ sudo apt-get install ethereum
 
 geth version
 ```
+Каталог Geth
+```
+mkdir $HOME/ethereum/execution
+```
 Создаем сервис клиента Sepolia (синхронизация со снапа, для запуска полной ноды добавляем ключ `--syncmode full`. Информация о [ключах](https://geth.ethereum.org/docs/fundamentals/command-line-options))
 
 
@@ -39,11 +43,7 @@ Group=root
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=/usr/bin/geth --sepolia --authrpc.addr localhost --authrpc.port 8551 --authrpc.vhosts localhost \
---http --http.addr 0.0.0.0 --http.port 9545 --http.api debug,eth,net,web3,txpool --ws --ws.addr 0.0.0.0 \
---ws.port 3335 --ws.api debug,eth,net,web3,txpool --ws.api eth,net,web3 --datadir /var/lib/goethereum \
---bootnodes "enode://9246d00bc8fd1742e5ad2428b80fc4dc45d786283e05ef6edbd9002cbc335d40998444732fbe921cb88e1d2c73d1b1de53bae6a2237996e9bfe14f871baf7066@18.168.182.86:30303,
-enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303"
+ExecStart=/usr/bin/geth --sepolia --port 30303 --http --http.api debug,eth,net,web3,txpool --authrpc.port 8551 --ws --ws.api debug,eth,net,web3,txpool --datadir /root/ethereum/execution --authrpc.jwtsecret /root/ethereum/execution/geth/jwtsecret --bootnodes "enode://9246d00bc8fd1742e5ad2428b80fc4dc45d786283e05ef6edbd9002cbc335d40998444732fbe921cb88e1d2c73d1b1de53bae6a2237996e9bfe14f871baf7066@18.168.182.86:30303,enode://ec66ddcf1a974950bd4c782789a7e04f8aa7110a72569b6e65fcd51e937e74eed303b1ea734e4d19cfaec9fbff9b6ee65bf31dcb50ba79acce9dd63a6aca61c7@52.14.151.177:30303"
 
 [Install]
 WantedBy=default.target
@@ -70,6 +70,8 @@ tar -C /usr/local/bin/ -vxzf lighthouse-v4.0.1-x86_64-unknown-linux-gnu.tar.gz
 lighthouse --version
 ```
 Сервис (синхронизация с чекпойнта, для запуска полной ноды убираем ключ `--checkpoint-sync-url`). [Документация](https://lighthouse-book.sigmaprime.io/)
+
+**Необходим корректный путь JWT Secret!** `--execution-jwt /root/ethereum/geth/geth/jwtsecret`
 ```
 sudo tee /etc/systemd/system/lighthoused.service > /dev/null <<EOF
 [Unit]
@@ -83,7 +85,9 @@ Group=root
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=/usr/local/bin/lighthouse bn --network sepolia --enr-tcp-port 9010 --enr-udp-port 9010 --execution-endpoint http://localhost:8551 --execution-jwt /root/ethereum/geth/geth/jwtsecret --checkpoint-sync-url https://checkpoint-sync.sepolia.ethpandaops.io --disable-deposit-contract-sync
+ExecStart=/usr/local/bin/lighthouse bn --network sepolia --execution-endpoint http://localhost:8551 \
+--execution-jwt /root/ethereum/execution/geth/jwtsecret --checkpoint-sync-url https://checkpoint-sync.sepolia.ethpandaops.io \
+--disable-deposit-contract-sync
 
 [Install]
 WantedBy=default.target
@@ -103,8 +107,8 @@ sudo systemctl restart lighthoused.service && journalctl -u lighthoused.service 
 Ставим Prysm
 ```
 cd $HOME
-mkdir -p ethereum/consensus
-mkdir ethereum/execution
+mkdir -p $HOME/ethereum/consensus
+mkdir $HOME/ethereum/execution
 
 cd ethereum/consensus
 mkdir prysm && cd prysm---
