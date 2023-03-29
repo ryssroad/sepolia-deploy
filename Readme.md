@@ -1,4 +1,4 @@
-# \#draft / Деплой ноды Sepolia / Goerli
+# \#draft | Деплой ноды Sepolia / Goerli
 
 **не валидаторская!**
 
