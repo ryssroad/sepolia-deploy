@@ -1,4 +1,7 @@
 # \#draft / Деплой ноды Sepolia / Goerli
+
+**не валидаторская!**
+
 Структурно нода (ethereum client) состоит из двух элементов:
 - Execution client (Geth, Nethermind, Besu, Erigon)
 - Consensus client (Lighthouse, Lodestar, Nimbus, Prysm, Teku)
